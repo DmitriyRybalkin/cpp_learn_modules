@@ -68,4 +68,4 @@ include(CPack)
 
 enable_testing()
 
-add_test(test_version test_version)
+add_test(test_version ${CMAKE_BINARY_DIR}/mod_1/hw_1/test_version)
