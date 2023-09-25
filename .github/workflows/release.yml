@@ -28,16 +28,6 @@ jobs:
           release_name: Release ${{ github.run_number }}
           draft: false
           prerelease: false
-      - name: Upload Release Asset HW1
-        id: upload-release-asset-hw1
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./helloworld-1.0.${{ github.run_number }}-Linux.deb
-          asset_name: helloworld-1.0.${{ github.run_number }}-Linux.deb
-          asset_content_type: application/vnd.debian.binary-package
       - name: Upload Release Asset HW2
         id: upload-release-asset-hw2
         uses: actions/upload-release-asset@v1
