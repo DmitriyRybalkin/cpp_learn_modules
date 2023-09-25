@@ -29,12 +29,12 @@ jobs:
           draft: false
           prerelease: false
       - name: Upload Release Asset HW2
-        id: upload-release-asset
+        id: upload-release-asset-hw2
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./test_ip_filter-0.0.1-Linux.deb
+          asset_path: /home/runner/work/cpp_learn_modules/cpp_learn_modules/test_ip_filter-0.0.1-Linux.deb
           asset_name: test_ip_filter-0.0.1-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
