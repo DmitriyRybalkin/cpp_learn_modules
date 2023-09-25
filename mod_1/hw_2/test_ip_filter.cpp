@@ -14,20 +14,32 @@ TEST(utility_test, test_split_parse)
 {
     // Arrange
     ip_pool_t ip_pool;
+    std::stringstream sstr;
+    sstr << "94.240.192.2\t0\t6\n";
+    sstr << "69.160.110.157\t1\t0\n";
+    sstr << "81.198.169.232\t5\t2\n";
+    sstr << "185.89.100.47\t34\t0\n";
+    static const ip_pool_t ip_pool_verify{
+        {94, 240, 192u, 2u},
+        {69, 160, 110, 157},
+        {81, 198, 169, 232},
+        {185, 89, 100, 47}
+    };
 
     // Act
-    std::ifstream ifs("ip_filter.tsv");
-    if (ifs.good())
+    for (std::string line; std::getline(sstr, line);)
     {
-        for (std::string line; std::getline(ifs, line);)
-        {
-            auto v = utility::split(line, '\t');
-            ip_pool.emplace_back(utility::parse_ip(v.at(0)));
-        }
+        auto v = utility::split(line, '\t');
+        ip_pool.emplace_back(utility::parse_ip(v.at(0)));
     }
 
     // Assert
     ASSERT_TRUE(!ip_pool.empty());
+    size_t idx{0u};
+    for(auto&& ip : ip_pool) {
+        ASSERT_THAT(ip, ::testing::ElementsAreArray(ip_pool_verify.at(idx)));
+        ++idx;
+    }
 }
 
 TEST(utility_test, test_lex_compare)
