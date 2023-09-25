@@ -41,18 +41,6 @@ install(TARGETS ${PROJECT_TEST} RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/mod_1/hw
 
 install(FILES files/ip_filter.tsv DESTINATION ${CMAKE_BINARY_DIR}/mod_1/hw_2/bin)
 
-set(CPACK_GENERATOR DEB)
-
-set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
-
-set(CPACK_PACKAGE_VERSION_MAJOR "0")
-set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "1")
-
-set(CPACK_PACKAGE_CONTACT dmitriy.rybalkin@gmail.com)
-
-include(CPack)
-
 enable_testing()
 
 add_test(${PROJECT_TEST} ${CMAKE_BINARY_DIR}/mod_1/hw_2/${PROJECT_TEST})
