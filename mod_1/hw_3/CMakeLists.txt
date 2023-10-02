@@ -3,7 +3,7 @@ project(ip_filter)
 
 project(allocators)
 
-add_executable(${PROJECT_NAME} map_allocator.cpp)
+add_executable(${PROJECT_NAME} main.cpp static_allocator.cpp)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_STANDARD 17
