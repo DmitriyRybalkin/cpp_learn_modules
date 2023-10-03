@@ -5,45 +5,56 @@
 #include <memory>
 #include <utility>
 
+#include "linked_list.h"
+
 namespace mem_allocators {
 
 template<typename T, std::size_t CAPACITY>
-struct dynamic_allocator
+struct dynamic_list_allocator
 {
     using value_type = T;
     using size_type = std::size_t;
 
-    T *pool{nullptr};
+    list<value_type> *pool{nullptr};
     size_type capacity = CAPACITY;
     size_type pos = 0;
 
-    dynamic_allocator()
+    dynamic_list_allocator() 
     {
-        pool = static_cast<value_type *>(std::malloc(capacity * sizeof(value_type)));
+        pool = new list<value_type>();
+        for(size_type i = 0u; i < capacity; ++i)
+        {
+            pool->add_node(value_type{});
+        }
     }
 
-    ~dynamic_allocator()
+    ~dynamic_list_allocator()
     {
-        free(pool);
+        pool->clean();
+        delete pool;
     }
 
-    T *allocate(size_type n, const void *hint = 0)
+    value_type *allocate(size_type n)
     {
-        (void)hint;
-
         if (pos + n > capacity)
         {
+            for (size_type i = 0u; i < capacity; ++i)
+            {
+                pool->add_node(value_type{});
+            }
             capacity *= 2;
-            pool = static_cast<value_type *>(std::realloc(pool, capacity * sizeof(value_type)));
         }
         const auto cur = pos;
         pos += n;
-        return pool + cur;
+        return pool->get(cur)->value;
     }
 
-    void deallocate(value_type *, size_type)
-    {
-
+    void deallocate(value_type *p, size_type) {
+        auto* remove_node = pool->find(p);
+        if(remove_node) {
+            const auto node_pos = remove_node->pos;
+            pool->remove_node(node_pos);
+        }
     }
 
     template<typename... Args>
@@ -65,24 +76,12 @@ struct dynamic_allocator
     template<class U>
     struct rebind
     {
-        typedef dynamic_allocator<U, CAPACITY> other;
+        typedef dynamic_list_allocator<U, CAPACITY> other;
     };
 
     using propagate_on_container_copy_assignment = std::false_type;
     using propagate_on_container_move_assignment = std::false_type;
     using propagate_on_container_swap = std::false_type;
 };
-
-template<typename T, typename U, std::size_t CAPACITY>
-constexpr bool operator==(const dynamic_allocator<T, CAPACITY> &a1, const dynamic_allocator<U, CAPACITY> &a2) noexcept
-{
-    return a1.pool == a2.pool && a1.capacity == a2.capacity && a1.pos == a2.pos;
-}
-
-template<typename T, typename U, std::size_t CAPACITY>
-constexpr bool operator!=(const dynamic_allocator<T, CAPACITY> &a1, const dynamic_allocator<U, CAPACITY> &a2) noexcept
-{
-    return a1.pool != a2.pool && a1.capacity != a2.capacity && a1.pos != a2.pos;
-}
 
 } // namespace mem_allocators

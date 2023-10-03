@@ -63,4 +63,16 @@ T static_allocator<T, CAPACITY>::pool[capacity];
 template<typename T, std::size_t CAPACITY>
 std::size_t static_allocator<T, CAPACITY>::pos = 0;
 
+template<typename T, typename U, std::size_t CAPACITY>
+constexpr bool operator==(const static_allocator<T, CAPACITY> &a1, const static_allocator<U, CAPACITY> &a2) noexcept
+{
+    return true;
+}
+
+template<typename T, typename U, std::size_t CAPACITY>
+constexpr bool operator!=(const static_allocator<T, CAPACITY> &a1, const static_allocator<U, CAPACITY> &a2) noexcept
+{
+    return false;
+}
+
 } // namespace mem_allocators
