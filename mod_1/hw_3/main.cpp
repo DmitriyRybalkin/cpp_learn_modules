@@ -51,12 +51,12 @@ int main()
     // task 3.2
     std::cout << "*** task 3.2 ***" << std::endl;
     auto test_map_3_2 = std::map<int, int, std::less<int>, dynamic_list_allocator<std::pair<const int, int>, test_map_size>>{};
-    std::cout << "test map #3.2::max size: " << test_map_3.max_size() << std::endl;
+    std::cout << "test map #3.2::max size: " << test_map_3_2.max_size() << std::endl;
     for (auto i = 0u; i < test_map_size + 1; ++i)
     {
         test_map_3_2[i] = utility::fact(i);
     }
-    std::cout << "test map #3.2::max size: " << test_map_3.max_size() << std::endl;
+    std::cout << "test map #3.2::max size: " << test_map_3_2.max_size() << std::endl;
 
     test_map_3_2.erase(5);
     test_map_3_2.insert(std::make_pair(5, utility::fact(5)));
