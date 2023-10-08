@@ -13,7 +13,7 @@ struct static_allocator
 
     static constexpr std::size_t capacity = CAPACITY;
     static std::size_t pos;
-    static T pool[capacity];
+    static value_type pool[capacity];
 
     static_allocator() = default;
     ~static_allocator() = default;
@@ -30,21 +30,10 @@ struct static_allocator
 
         int cur = pos;
         pos += n;
-        return reinterpret_cast<T *>(pool) + cur;
+        return pool + cur;
     }
 
-    void deallocate(T *, std::size_t) {}
-
-    template<class Up, class... Args>
-    void construct(Up *p, Args &&... args)
-    {
-        ::new ((void *)p) Up(std::forward<Args>(args)...);
-    }
-
-    void destroy(T *p)
-    {
-        p->~T();
-    }
+    void deallocate(value_type *, std::size_t) {}
 
     template<class U>
     struct rebind

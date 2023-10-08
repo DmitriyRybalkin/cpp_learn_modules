@@ -13,18 +13,18 @@ struct dynamic_allocator
     using value_type = T;
     using size_type = std::size_t;
 
-    T *pool{nullptr};
+    T **pool{nullptr};
     size_type capacity = CAPACITY;
     size_type pos = 0;
 
     dynamic_allocator()
     {
-        pool = static_cast<value_type *>(std::malloc(capacity * sizeof(value_type)));
+        pool = new value_type*[capacity];
     }
 
     ~dynamic_allocator()
     {
-        free(pool);
+        delete[] pool;
     }
 
     T *allocate(size_type n, const void *hint = 0)
@@ -34,27 +34,33 @@ struct dynamic_allocator
         if (pos + n > capacity)
         {
             capacity *= 2;
-            pool = static_cast<value_type *>(std::realloc(pool, capacity * sizeof(value_type)));
+            value_type** new_pool = new value_type*[capacity];
+            std::copy(pool, pool + pos, new_pool);
+            delete[] pool;
+            pool = new_pool;
         }
+
+        pool[pos] = new value_type;
         const auto cur = pos;
         pos += n;
-        return pool + cur;
+        return pool[cur];
     }
 
-    void deallocate(value_type *, size_type)
+    void deallocate(value_type *p, size_type)
     {
-
-    }
-
-    template<typename... Args>
-    void construct(value_type *p, Args &&... args)
-    {
-        ::new ((void *)p) value_type(std::forward<Args>(args)...);
-    }
-
-    void destroy(value_type *p)
-    {
-        p->~value_type();
+        for(auto i = 0u; i < pos; ++i)
+        {
+            if(pool[i] == p)
+            {
+                delete pool[i];
+                for(auto j = i; j < pos; ++j) {
+                    pool[j] = pool[j+1];
+                }
+                pool[pos] = nullptr;
+                --pos;
+                break;
+            }
+        }
     }
 
     size_type max_size() const
