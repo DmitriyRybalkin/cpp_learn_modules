@@ -1,6 +1,3 @@
-
-project(ip_filter)
-
 project(allocators)
 
 add_executable(${PROJECT_NAME} main.cpp)
