@@ -1,12 +1,18 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
 
 namespace mem_allocators {
 
 template<typename T>
 struct node
 {
+    node() = default;
+
+    node(const T &v)
+        : value{v} {};
+
     T value;
     node *next{nullptr};
     node *prev{nullptr};
@@ -93,6 +99,23 @@ public:
         _clear();
     }
 
+    list(list& l) : m_alloc(l.m_alloc)
+    {
+        _init();
+        _initialize_dispatch(l.begin(), l.end());
+    }
+
+    list& operator=(list& l) 
+    {
+        if(this != &l)
+        {
+            _clear();
+            _init();
+            _initialize_dispatch(l.begin(), l.end());
+        }
+        return *this;
+    }
+
     static size_t distance(iterator first, iterator last)
     {
         return std::distance(first, last);
@@ -118,58 +141,36 @@ public:
         return reverse_iterator(begin());
     }
 
-    void push_back(const value_type &val)
+    template<typename... Args>
+    void emplace_back(Args &&... args)
     {
-        auto *node = alloc_traits::allocate(m_alloc, 1);
-        node->value = val;
-
-        auto *prev_node = m_tail->prev;
-        prev_node->next = node;
-        node->next = m_tail;
-        node->prev = prev_node;
-        m_tail->prev = node;
-
-        ++m_counter;
+        _insert(end(), std::forward<Args>(args)...);
     }
 
-    void push_front(const value_type &val)
+    void push_back(const value_type &val)
     {
-        auto *node = alloc_traits::allocate(m_alloc, 1);
-        node->value = val;
-
-        auto *next_node = m_head->next;
-        next_node->prev = node;
-        node->prev = m_head;
-        node->next = next_node;
-        m_head->next = node;
-
-        ++m_counter;
+        _insert(end(), val);
     }
 
     void pop_back()
     {
-        auto *node = m_tail->prev;
-        if (node != m_head)
-        {
-            node->prev->next = m_tail;
-            m_tail->prev = node->prev;
+        _erase(iterator(m_tail->prev));
+    }
 
-            alloc_traits::deallocate(m_alloc, node, 1);
-            --m_counter;
-        }
+    template<typename... Args>
+    void emplace_front(Args &&... args)
+    {
+        _insert(begin(), std::forward<Args>(args)...);
+    }
+
+    void push_front(const value_type &val)
+    {
+        _insert(begin(), val);
     }
 
     void pop_front()
     {
-        auto *node = m_head->next;
-        if (node != m_tail)
-        {
-            m_head->next = node->next;
-            node->next->prev = m_head;
-
-            alloc_traits::deallocate(m_alloc, node, 1);
-            --m_counter;
-        }
+        _erase(begin());
     }
 
     reference front() const noexcept
@@ -220,6 +221,7 @@ private:
 
             auto next_node = node->next;
             m_head->next = next_node;
+            alloc_traits::destroy(m_alloc, node);
             alloc_traits::deallocate(m_alloc, node, 1);
 
             node = next_node;
@@ -228,6 +230,56 @@ private:
 
         alloc_traits::deallocate(m_alloc, m_tail, 1);
         alloc_traits::deallocate(m_alloc, m_head, 1);
+    }
+
+    template<typename... Args>
+    node<value_type> *_create_node(Args &&... args)
+    {
+        auto *node = alloc_traits::allocate(m_alloc, 1);
+        alloc_traits::construct(m_alloc, node, std::forward<Args>(args)...);
+        return node;
+    }
+
+    template<typename... Args>
+    void _insert(iterator position, Args &&... args)
+    {
+        auto *tmp = _create_node(std::forward<Args>(args)...);
+        _hook(position, tmp);
+        ++m_counter;
+    }
+
+    void _erase(iterator position)
+    {
+        _unhook(position);
+        auto *node = position.m_node;
+
+        alloc_traits::destroy(m_alloc, node);
+        alloc_traits::deallocate(m_alloc, node, 1);
+        --m_counter;
+    }
+
+    void _hook(iterator position, node<value_type> *node) noexcept
+    {
+        node->next = position.m_node;
+        node->prev = position.m_node->prev;
+        position.m_node->prev->next = node;
+        position.m_node->prev = node;
+    }
+
+    void _unhook(iterator position) noexcept
+    {
+        auto *next_node = position.m_node->next;
+        auto *prev_node = position.m_node->prev;
+        prev_node->next = next_node;
+        next_node->prev = prev_node;
+    }
+
+    void _initialize_dispatch(iterator begin, iterator end)
+    {
+        for(; begin != end; ++begin)
+        {
+            emplace_back(*begin);
+        }
     }
 
     allocator_type m_alloc;

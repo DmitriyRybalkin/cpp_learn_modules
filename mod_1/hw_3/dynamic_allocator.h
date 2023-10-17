@@ -13,18 +13,50 @@ struct dynamic_allocator
     using value_type = T;
     using size_type = std::size_t;
 
-    T **pool{nullptr};
-    size_type capacity = CAPACITY;
-    size_type pos = 0;
-
     dynamic_allocator()
     {
-        pool = new value_type*[capacity];
+        pool = new value_type *[capacity];
     }
 
     ~dynamic_allocator()
     {
+        for (auto i = 0u; i < pos; ++i)
+        {
+            delete pool[i];
+            pool[i] = nullptr;
+        }
         delete[] pool;
+    }
+
+    dynamic_allocator(const dynamic_allocator &other)
+    {
+        capacity = other.capacity;
+        pos = other.pos;
+
+        delete[] pool;
+        pool = new value_type *[capacity];
+        for (auto i = 0u; i < pos; ++i)
+        {
+            pool[i] = new value_type{*other.pool[i]};
+        }
+    }
+
+    dynamic_allocator &operator=(const dynamic_allocator &other)
+    {
+        if (this != &other)
+        {
+            delete[] pool;
+
+            capacity = other.capacity;
+            pos = other.pos;
+
+            pool = new value_type *[capacity];
+            for (auto i = 0u; i < pos; ++i)
+            {
+                pool[i] = new value_type{*other.pool[i]};
+            }
+        }
+        return *this;
     }
 
     T *allocate(size_type n, const void *hint = 0)
@@ -34,7 +66,7 @@ struct dynamic_allocator
         if (pos + n > capacity)
         {
             capacity *= 2;
-            value_type** new_pool = new value_type*[capacity];
+            value_type **new_pool = new value_type *[capacity];
             std::copy(pool, pool + pos, new_pool);
             delete[] pool;
             pool = new_pool;
@@ -48,13 +80,14 @@ struct dynamic_allocator
 
     void deallocate(value_type *p, size_type)
     {
-        for(auto i = 0u; i < pos; ++i)
+        for (auto i = 0u; i < pos; ++i)
         {
-            if(pool[i] == p)
+            if (pool[i] == p)
             {
                 delete pool[i];
-                for(auto j = i; j < pos; ++j) {
-                    pool[j] = pool[j+1];
+                for (auto j = i; j < pos; ++j)
+                {
+                    pool[j] = pool[j + 1];
                 }
                 pool[pos] = nullptr;
                 --pos;
@@ -63,9 +96,26 @@ struct dynamic_allocator
         }
     }
 
+    template<typename U, typename... Args>
+    void construct(U *p, Args &&... args)
+    {
+        new (p) U(std::forward<Args>(args)...);
+    }
+
+    template<typename U>
+    void destroy(U *p)
+    {
+        p->~U();
+    }
+
     size_type max_size() const
     {
         return capacity;
+    }
+
+    size_type size() const
+    {
+        return pos;
     }
 
     template<class U>
@@ -74,9 +124,14 @@ struct dynamic_allocator
         typedef dynamic_allocator<U, CAPACITY> other;
     };
 
-    using propagate_on_container_copy_assignment = std::false_type;
+    using propagate_on_container_copy_assignment = std::true_type;
     using propagate_on_container_move_assignment = std::false_type;
     using propagate_on_container_swap = std::false_type;
+
+private:
+    T **pool{nullptr};
+    size_type capacity = CAPACITY;
+    size_type pos = 0;
 };
 
 template<typename T, typename U, std::size_t CAPACITY>

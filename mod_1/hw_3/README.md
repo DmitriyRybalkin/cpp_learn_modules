@@ -1,1 +1,19 @@
 ### Домашняя работа №3
+
+#### Отчет valgrind
+```
+==11951== Memcheck, a memory error detector
+==11951== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11951== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==11951== Command: ./allocators
+==11951== 
+==11951== 
+==11951== HEAP SUMMARY:
+==11951==     in use at exit: 0 bytes in 0 blocks
+==11951==   total heap usage: 134 allocs, 134 frees, 78,968 bytes allocated
+==11951== 
+==11951== All heap blocks were freed -- no leaks are possible
+==11951== 
+==11951== For lists of detected and suppressed errors, rerun with: -s
+==11951== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+```
