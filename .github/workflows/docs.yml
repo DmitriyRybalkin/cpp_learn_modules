@@ -1,0 +1,32 @@
+name: 'C++ Documentation'
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    
+
+jobs:
+  generate:
+    runs-on: ubuntu-20.04
+    permissions: write-all
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: "true"
+
+      - name: Install Doxygen
+        run: sudo apt-get install doxygen graphviz -y
+        shell: bash
+
+      - name: Generate Doxygen Documentation
+        run: doxygen mod_1/hw_4/Doxyfile
+        shell: bash
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.4.3
+        with:
+          branch: "gh-pages"
+          folder: "mod_1/hw_4/doc"
