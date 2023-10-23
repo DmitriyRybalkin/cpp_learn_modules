@@ -1,0 +1,72 @@
+\hypertarget{namespaceutility}{}\doxysection{utility Namespace Reference}
+\label{namespaceutility}\index{utility@{utility}}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structutility_1_1is__container}{is\+\_\+container}}
+\item 
+struct \mbox{\hyperlink{structutility_1_1is__container_3_01std_1_1list_3_01T_00_01Alloc_01_4_01_4}{is\+\_\+container$<$ std\+::list$<$ T, Alloc $>$ $>$}}
+\item 
+struct \mbox{\hyperlink{structutility_1_1is__container_3_01std_1_1vector_3_01T_00_01Alloc_01_4_01_4}{is\+\_\+container$<$ std\+::vector$<$ T, Alloc $>$ $>$}}
+\item 
+struct \mbox{\hyperlink{structutility_1_1is__cpp__string}{is\+\_\+cpp\+\_\+string}}
+\item 
+struct \mbox{\hyperlink{structutility_1_1is__cpp__string_3_01std_1_1basic__string_3_01T_00_01Traits_00_01Alloc_01_4_01_4}{is\+\_\+cpp\+\_\+string$<$ std\+::basic\+\_\+string$<$ T, Traits, Alloc $>$ $>$}}
+\item 
+struct \mbox{\hyperlink{structutility_1_1is__tuple}{is\+\_\+tuple}}
+\item 
+struct \mbox{\hyperlink{structutility_1_1is__tuple_3_01std_1_1tuple_3_01T_8_8_8_01_4_01_4}{is\+\_\+tuple$<$ std\+::tuple$<$ T... $>$ $>$}}
+\item 
+struct \mbox{\hyperlink{structutility_1_1is__tuple__uniform}{is\+\_\+tuple\+\_\+uniform}}
+\item 
+struct \mbox{\hyperlink{structutility_1_1is__tuple__uniform_3_01std_1_1tuple_3_01T_8_8_8_01_4_01_4}{is\+\_\+tuple\+\_\+uniform$<$ std\+::tuple$<$ T... $>$ $>$}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T , typename  = std\+::enable\+\_\+if\+\_\+t$<$std\+::numeric\+\_\+limits$<$\+T$>$\+::is\+\_\+integer$>$$>$ }\\constexpr std\+::array$<$ uint8\+\_\+t, sizeof(T)$>$ \mbox{\hyperlink{namespaceutility_a32364c7d3ab91c3c9e94884e7dcfcf73}{integer\+\_\+to\+\_\+array\+\_\+of\+\_\+bytes}} (T source, bool little\+\_\+endian=true)
+\begin{DoxyCompactList}\small\item\em convert from integer to corresponding size std\+::array \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename... T$>$ }\\constexpr bool \mbox{\hyperlink{namespaceutility_a6fc1f575d105131a36755564ca7ee218}{is\+\_\+tuple\+\_\+uniform\+\_\+v}} = \mbox{\hyperlink{structutility_1_1is__tuple__uniform}{is\+\_\+tuple\+\_\+uniform}}$<$T...$>$\+::value
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespaceutility_a32364c7d3ab91c3c9e94884e7dcfcf73}\label{namespaceutility_a32364c7d3ab91c3c9e94884e7dcfcf73}} 
+\index{utility@{utility}!integer\_to\_array\_of\_bytes@{integer\_to\_array\_of\_bytes}}
+\index{integer\_to\_array\_of\_bytes@{integer\_to\_array\_of\_bytes}!utility@{utility}}
+\doxysubsubsection{\texorpdfstring{integer\_to\_array\_of\_bytes()}{integer\_to\_array\_of\_bytes()}}
+{\footnotesize\ttfamily template$<$typename T , typename  = std\+::enable\+\_\+if\+\_\+t$<$std\+::numeric\+\_\+limits$<$\+T$>$\+::is\+\_\+integer$>$$>$ \\
+constexpr std\+::array$<$uint8\+\_\+t, sizeof(T)$>$ utility\+::integer\+\_\+to\+\_\+array\+\_\+of\+\_\+bytes (\begin{DoxyParamCaption}\item[{T}]{source,  }\item[{bool}]{little\+\_\+endian = {\ttfamily true} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [constexpr]}}
+
+
+
+convert from integer to corresponding size std\+::array 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & -\/ any integer type \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em source} & integer value \\
+\hline
+\mbox{\texttt{ in}}  & {\em little\+\_\+endian} & -\/ set to false, if input value should be converted to big endian array \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::array$<$uint8\+\_\+t, sizeof(\+T)$>$ 
+\end{DoxyReturn}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespaceutility_a6fc1f575d105131a36755564ca7ee218}\label{namespaceutility_a6fc1f575d105131a36755564ca7ee218}} 
+\index{utility@{utility}!is\_tuple\_uniform\_v@{is\_tuple\_uniform\_v}}
+\index{is\_tuple\_uniform\_v@{is\_tuple\_uniform\_v}!utility@{utility}}
+\doxysubsubsection{\texorpdfstring{is\_tuple\_uniform\_v}{is\_tuple\_uniform\_v}}
+{\footnotesize\ttfamily template$<$typename... T$>$ \\
+constexpr bool utility\+::is\+\_\+tuple\+\_\+uniform\+\_\+v = \mbox{\hyperlink{structutility_1_1is__tuple__uniform}{is\+\_\+tuple\+\_\+uniform}}$<$T...$>$\+::value\hspace{0.3cm}{\ttfamily [constexpr]}}
+
