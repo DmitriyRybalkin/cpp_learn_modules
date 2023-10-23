@@ -16,3 +16,4 @@ jobs:
           branch: gh-pages
           folder: mod_1/hw_4/docs/html
           config_file: mod_1/hw_4/Doxyfile
+          target_folder: mod_1/hw_4
