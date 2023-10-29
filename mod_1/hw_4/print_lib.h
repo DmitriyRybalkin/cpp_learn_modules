@@ -18,7 +18,7 @@ namespace print_lib {
 template<typename T, typename = std::enable_if_t<utility::is_cpp_string<T>::value>>
 constexpr void _print_string(T &&s)
 {
-    std::cout << std::move(s) << std::endl;
+    std::cout << s << std::endl;
 }
 
 /*!
@@ -99,19 +99,19 @@ constexpr void print_ip(T &&v)
 {
     if constexpr (std::numeric_limits<T>::is_integer)
     {
-        _print_integer(std::move(v));
+        _print_integer(std::forward<T>(v));
     }
     else if constexpr (utility::is_cpp_string<T>::value)
     {
-        _print_string(std::move(v));
+        _print_string(std::forward<T>(v));
     }
     else if constexpr (utility::is_tuple<T>::value)
     {
-        _print_tuple(std::move(v));
+        _print_tuple(std::forward<T>(v));
     }
     else if constexpr (utility::is_container<T>::value)
     {
-        _print_container(std::move(v));
+        _print_container(std::forward<T>(v));
     }
 }
 
